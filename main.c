@@ -2,11 +2,11 @@
     Developer's Info:
     Ioannis-Nektarios Bourbouriotis
     A.M: 2022202400025
-    dit24025@go.uop.gr
+    Email: dit24025@go.uop.gr
 
     Alexandros Papadopoulos
     A.M: 2022202400156
-    dit24156@go.uop.gr
+    Email: dit24156@go.uop.gr
 */
 
 //Libraries:
@@ -15,24 +15,26 @@
 #include <stdlib.h>
 
 //Function bodies:
-void wrongStartInput(void);
 int countWords(char* fname);
 unsigned int strToHash(char* str);
+void wrongStartInput(void);
 
 //Static variables for general use:
 static int dictionary_size = 0;
 static int storing_type;
+static char* filename;
 
 int main(int argc, char const *argv[])
 {
-    int list;
     //Checking starting input
     if (argc<=1 || argc>3) //Wrong start input, wrong num of inputs
         wrongStartInput();
     else
     {
+        int list;
         if (argc==2)
         {
+            filename = "dictionary.txt";
             //Determine counting mode
             if (strlen(argv[1])==1 && strcmp(argv[1],"1") == 0)
                 dictionary_size = countWords("dictionary.txt");
@@ -46,14 +48,14 @@ int main(int argc, char const *argv[])
         }
         else if (argc==3)
         {
-            char* filename = malloc(sizeof(argv[1]));
-            strcpy(filename,argv[1]);
-            filename = realloc(filename,sizeof(filename)+sizeof(".txt"));
-            strcat(filename, ".txt");
+            //Save the filename
+            filename = malloc(sizeof(argv[1]) + 5); //5: strlen(.txt) + \0
+            snprintf(filename, (strlen(argv[1]) + 5), "%s.txt", argv[1]); //Copy all the file name with extension
+            
             //Determine counting mode
-            if (strlen(argv[2])==1 &&strcmp(argv[2],"1") == 0)
+            if (strlen(argv[2])==1 && strcmp(argv[2], "1") == 0)
                 dictionary_size = countWords(filename);
-            else if (strlen(argv[2])==1 && strcmp(argv[2],"2") == 0)
+            else if (strlen(argv[2])==1 && strcmp(argv[2], "2") == 0)
                list = 0; //for error appearence.
                //It will be an list of anagrammed words.
             else
@@ -61,7 +63,7 @@ int main(int argc, char const *argv[])
             storing_type = atoi(argv[2]); //Set the way of dictionary's storing type
         }
         //Make the dictionary array with the right amount of empty space for the fragmentation.
-        char** dictionary = (char**)malloc(sizeof(char*)*dictionary_size + (int)(dictionary_size*0.5));
+        char** dictionary = (char**) malloc(sizeof(char*)*(dictionary_size + (int)(dictionary_size*0.5)));
     }
 
     //Variables
@@ -72,12 +74,15 @@ int main(int argc, char const *argv[])
 //Function Factory
 unsigned int strToHash(char* str)
 {
-     unsigned int hash=0;
-     while(*str){
-        hash=*str+31*hash;
-        str++;
-     }
-     return hash%dictionary_size;
+    unsigned int hash = 0;
+    
+    while (*str) //While not '\0'
+    {
+        hash = *str + 31*hash;
+        str++; //Next character
+    }
+
+    return hash % dictionary_size; //Return num between [0, dictionary_size-1]
 }
 
 int countWords(char* fname)
@@ -87,19 +92,24 @@ int countWords(char* fname)
     if (!fp) /*Error opening file*/
     {
         printf("Couldn't find file.\n");
-        return -1;
+        exit(1);
     }
+
     printf("Loading...");
-    int count=0;
+    int count = -1; //Because of an extra read that will happen
     char dummy[50]; //Used just to count the total words.
-    while(!feof(fp)){
+    
+    //Through the file we go
+    while (!feof(fp))
+    {
         fscanf(fp, "%s",dummy); //Read the words
-        count++; 
+        count++;
     }
-    count--; //An extra read is happening, so we remove it.
-    fclose(fp);
+
+    fclose(fp); //Close file
     printf("\nWord Count Completed.\n");
-    printf("Words: %d", count);
+    printf("Words: %d\n", count);
+    
     return count;
 }
 
