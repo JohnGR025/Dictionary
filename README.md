@@ -12,3 +12,12 @@ Relevant messages appear for what happened.
 2) The array remains static since we input a file name but the storing differs. we use the hashing function on the sorting of the word (in ascending order) and store that word on the first cell. then that cell points to every word matching the sorting word.
 
 As we can see, the array is a static table storing structs. In case 1 the cells store only one word that is dynamic allocated and in the case 2 they store a chain of words.
+
+Execution command: ./main file_name [1 or 2]
+file_name can be the name of the file that contains words to be inserted when the program starts. If skipped then the program assumes the name of the file as "dictionary". The numbers represent the way of how the dictionary is being stored.
+1 for a table that stores a word on each cell as char*.
+2 for a table that each cell stores a chain of words with the same sorting anagram.
+More about it futhermore.
+
+### Main program:
+Starting by checking the input of user
