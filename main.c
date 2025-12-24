@@ -1,4 +1,4 @@
-/*  
+/*
     Developer's Info:
     Ioannis-Nektarios Bourbouriotis
     A.M: 2022202400025
@@ -11,6 +11,7 @@
 
 //Libraries
 
+static dictionary_size = 0;
 
 int main(int argc, char const *argv[])
 {
@@ -19,3 +20,11 @@ int main(int argc, char const *argv[])
 }
 
 //Function Factory
+unsigned int strtohash(char* str){
+     unsigned int hash=0;
+     while(*str){
+        hash=*str+31*hash;
+        str++;
+     }
+     return hash%dictionary_size;
+}
