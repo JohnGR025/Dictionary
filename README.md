@@ -1,6 +1,12 @@
 # Dictionary
 University project, creating a dictionary while practising with the tree data type.
 
+Issues:
+- One propose: in case 2 make the list as follows:
+starts empty. when we input a sort word we make the node and point there. for every other node we continue to create nodes and add them to the end of list. 
+so the struct is an array (metaphorical) that points to the sorting words and every cell has its own chain of words. that way we dont need to check for how many cells the array needs. 
+saves time but no memory (1 extra pointer for the next cell).
+
 ### Structure/Execution of program:
 The user starts the program by inputing the dictionary file name
 and the way of storing the words (either with hashing table or Anagrams table).
