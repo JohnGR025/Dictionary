@@ -2,8 +2,9 @@
 University project, creating a dictionary while practising with the tree data type.
 
 ### Structure/Execution of program:
-The user starts the program by inputing the dictionary file name (without the extension BUT it needs to be txt)
+The user starts the program by inputing the dictionary file name
 and the way of storing the words (either with hashing table or Anagrams table).
+The file NEEDS to be txt and each word to be the one under the other. You can input it without the extension.
 1) The array will be static size since we can know the users input file and each cell will point to a char* variable (each word).
 The word will be stored using malloc and then the array will point there.
 The array size will dependent from the amount of words from the dictionary, since, for the sake of the fregmantation, we need to leave

@@ -16,6 +16,8 @@
 
 //Function bodies:
 int countWords(char* fname);
+void searchDictionary(char **arrayD, unsigned int *pHash, unsigned int *pIndex);
+void printSearchResult(unsigned int *pHash, unsigned int *pIndex);
 unsigned int strToHash(char* str);
 void wrongStartInput(void);
 
@@ -23,6 +25,7 @@ void wrongStartInput(void);
 static int dictionary_size = 0;
 static int storing_type;
 static char* filename;
+static char** arrayD = NULL; //The dictionary, where the words are stored
 
 int main(int argc, char const *argv[])
 {
@@ -66,8 +69,57 @@ int main(int argc, char const *argv[])
         char** dictionary = (char**) malloc(sizeof(char*)*(dictionary_size + (int)(dictionary_size*0.5)));
     }
 
+    //Open file
+    FILE *words = fopen(filename, "r");
+    if (words==NULL)
+    {
+        printf("File can't be opened!\n");
+        exit(0);
+    }
+
     //Variables
+    arrayD = malloc(dictionary_size * sizeof(char*)); //Allocate memory for dictionary
+    char* word = NULL;
+    int i = 0;
+
+    //Start of developing and interaction of dictionary
+    //Start of saving words in dictionary array
+    while (!feof(filename)) //Traverse all the file
+    {
+        //Read and store every word
+        fscanf(filename, "%s\n", word); //Read word into a var
+        arrayD[i] = strdup(word); //Store var into array
+        i++; //Next array cell
+    }
+
+    switch (storing_type) //Different interaction with dictionary based of storing_type
+    {
+    case 1:
+        //Interaction
+        unsigned int hash_code, index;
+        unsigned int *pHash=&hash_code, *pIndex=&index;
+        do
+        {
+            scanf("%s", word); //Read a word for search
+            if (strcmp(word, "") == 0) //Input is empty
+                break; //End of interaction
+            
+            searchDictionary(&arrayD, &word, pHash, pIndex);
+            printSearchResult(&word, pHash, pIndex);
+            
+        } while (strcmp(word, "") == 0);
+    break;
     
+    case 2:
+
+    break;
+    }
+    
+    printf("Dictionary is closing...\n");
+    freeMemory(&arrayD);
+
+    fclose(filename); //Close file
+
     return 0;
 }
 
@@ -111,6 +163,39 @@ int countWords(char* fname)
     printf("Words: %d\n", count);
     
     return count;
+}
+
+void searchDictionary(char **arrayD, char *word, unsigned int *pHash, unsigned int *pIndex)
+{
+    unsigned int hash = strToHash(word);
+
+    //Search dictionary
+    
+}
+
+void printSearchResult(char *word, unsigned int *pHash, unsigned int *pIndex)
+{
+    //Word NOT found
+    if (*pIndex == -1)
+    {
+        printf("Your word: %s hasn't been found\n", word);
+        return;
+    }
+    //Word found
+    printf("Your word: %s found in\n", word);
+    printf("Hash Code: %u\n", *pHash);
+    printf("Index: %u\n", *pIndex);
+}
+
+void freeMemory(char **arrayD)
+{
+    //Free allocated memory
+    int i;
+    for (i = 0; i < dictionary_size; i++)
+    {
+        free(arrayD[i]); //Free each word
+    }
+    free(arrayD); //Free the array
 }
 
 void wrongStartInput(void)
