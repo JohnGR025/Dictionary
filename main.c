@@ -30,10 +30,12 @@ typedef struct DictionaryArray2{
 
 //Function bodies:
 int countWords(char* fname);
-int searchDictionary(char *word,unsigned int *pHash, unsigned int *pIndex);
+int searchDictionaryCase1(char *word, unsigned int *pHash, unsigned int *pIndex);
+int searchDictionaryCase2(char *word, unsigned int *pHash, unsigned int *pIndex);
 void wordInsertionCase1(FILE *fp);
 void wordInsertionCase2(FILE *fp);
-void printSearchResult(char *word, unsigned int *pHash, unsigned int *pIndex);
+void printSearchedResultCase1(char *word, unsigned int *pHash, unsigned int *pIndex);
+void printSearchedResultCase2(char *word, unsigned int *pHash, unsigned int *pIndex);
 unsigned int strToHash(char *str);
 void sortWord(char** word);
 void wrongStartInput(void);
@@ -317,7 +319,7 @@ void sortWord(char** word)
     }
 }
 
-int searchDictionaryCase1(char *word, unsigned int *pHash, char *pIndex) //The word here is from the user's input.
+int searchDictionaryCase1(char *word, unsigned int *pHash, unsigned int *pIndex) //The word here is from the user's input.
 {
     *pHash = strToHash(word);
     //Search dictionary
@@ -351,15 +353,56 @@ void printSearchedResultCase1(char *word, unsigned int *pHash, unsigned int *pIn
     printf("Index: %u\n", *pIndex);
 }
 
+int searchDictionaryCase2(char *word, unsigned int *pHash, unsigned int *pIndex) //The word here is from the user's input.
+{
+    char* sorted_word=NULL;
+    *pHash = strToHash(word);
+    //Ready the sorted word
+    sorted_word = strdup(word);
+    sortWord(sorted_word);
+    //Search dictionary
+    if (strcmp(dictionary2[*pHash].sorted_word, sorted_word) == 0)
+    {
+        *pIndex = *pHash;
+        return 1; //Found the word
+    }
+    else
+    {
+        int i = 1;
+        unsigned int starting_hash = *pHash;
+        *pIndex = starting_hash;
+        //Traverse the cells until found an empty one or come back to the same one
+        while ((*pIndex = *pIndex + i % dictionary_size) != starting_hash) //check like a circle array
+        {
+            if (strcmp(dictionary2[*pHash].sorted_word, sorted_word) == 0)
+                return 1; //Found the word
+            i++; //Next array cell
+        }
+    }
+
+    return 0; //Not found
+}
+
+void printSearchedResultCase2(char *word, unsigned int *pHash, unsigned int *pIndex)
+{
+    //Print info
+    printf("Your word: %s found in\n", word);
+    printf("Hash Code: %u\n", *pHash);
+    printf("Index: %u\n", *pIndex);
+    printf("--Printing all the anagrams--\n");
+    Chain *temp=NULL;
+    while (temp!=NULL)
+    {
+        printf("%s\n", temp->word);
+        temp = temp->next;
+    }
+    printf("--End of printing--\n");
+}
+
 void freeMemoryCase1(void)
 {
     //Free allocated memory
-    int i;
-    for (i = 0; i < dictionary_size; i++)
-    {
-        free(dictionary[i]); //Free each word
-    }
-    free(dictionary); //Free the array
+    free(dictionary1); //Free the array
 }
 
 void freeMemoryCase2(void)
