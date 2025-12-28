@@ -1,14 +1,3 @@
-/*
-    Developer's Info:
-    Ioannis-Nektarios Bourbouriotis
-    A.M: 2022202400025
-    Email: dit24025@go.uop.gr
-
-    Alexandros Papadopoulos
-    A.M: 2022202400156
-    Email: dit24156@go.uop.gr
-*/
-
 //Libraries:
 #include <stdio.h>
 #include <string.h>
@@ -27,6 +16,10 @@ typedef struct DictionaryArray2{
     char* sorted_word;
     Chain *head;
 } Darray2;
+typedef union Union{
+    Darray1* dict1;
+    Darray2* dict2;
+} UnionD;
 
 //Function bodies:
 int countWords(char* fname);
@@ -48,30 +41,26 @@ static int dictionary_size = 0;
 static int storing_type;
 static char* filename;
 /*Only one will be used*/
-static Darray1* dictionary1 = NULL; //The dictionary, where the words are stored
-static Darray2* dictionary2 = NULL; //The dictionary, where the words are stored
+static UnionD dictionary; //The dictionary, where the words are stored
 
 int main(int argc, char const *argv[])
 {
+    argc = 2;
     //Checking starting input
     if (argc<=1 || argc>3) //Wrong start input, wrong num of inputs
         wrongStartInput();
     else
     {
-        int list;
         //In this case the user didn't give a specific name for the txt file 
         //so it automatically converts the file name to dictionary.txt.
         if (argc==2)
         {
             //Determine counting mode.
-            if (strlen(argv[1])==1 && strcmp(argv[1],"1")==0)
+            if (strlen(argv[1])==1 && (strcmp(argv[1],"1")==0 || strcmp(argv[1],"2")==0))
                 dictionary_size = countWords("dictionary.txt") + (int)(dictionary_size*0.5);
-            else if (strlen(argv[1])==1 && strcmp(argv[1],"2")==0)
-                //It will be an list of anagrammed words.
-                list = 0; //for error appearance.
             else
                 wrongStartInput();
-            storing_type = atoi(argv[1]); //Set the way of dictionary's storing type
+            storing_type = 1;//atoi(argv[1]); //Set the way of dictionary's storing type
             filename = malloc(strlen("dictionary.txt") + 1);
             strcpy(filename, "dictionary.txt");
         }
@@ -80,15 +69,11 @@ int main(int argc, char const *argv[])
             //Save the filename by placing the .txt in the end.
             filename = malloc(strlen(argv[1]) + 5);
             strcpy(filename, argv[1]);
-            filename = realloc(filename, sizeof(filename)+sizeof(".txt"));
             strcat(filename, ".txt");
             
             //Determine counting mode
-            if (strlen(argv[2])==1 && strcmp(argv[2], "1") == 0)
+            if (strlen(argv[2])==1 && (strcmp(argv[2], "1")==0 || strcmp(argv[2], "2")==0))
                 dictionary_size = countWords(filename) + (int)(dictionary_size*0.5);
-            else if (strlen(argv[2])==1 && strcmp(argv[2], "2") == 0)
-            //It will be an list of anagrammed words.
-               list = 0; //for error appearence.
             else
                 wrongStartInput();
             storing_type = atoi(argv[2]); //Set the way of dictionary's storing type
@@ -111,15 +96,15 @@ int main(int argc, char const *argv[])
     unsigned int *pIndex = &index;
     int found = 0;
     //For word input from user
-    char* word_taker = (char*) malloc(WORD_SIZE*sizeof(char));
+    char word_taker[WORD_SIZE] = {0};
 
     switch (storing_type) //Different interaction with dictionary based of storing_type
     {
     case 1:
         //Start of developing the dictionary
         //Make the dictionary array with the right amount of empty space for the fragmentation.
-        dictionary1 = (Darray1*) malloc(sizeof(Darray1)*dictionary_size);
-        wordInsertionCase1(filename);
+        dictionary.dict1 = (Darray1*) calloc(sizeof(Darray1), dictionary_size);
+        wordInsertionCase1(words);
 
         //Interaction
         do
@@ -148,8 +133,8 @@ int main(int argc, char const *argv[])
     case 2:
         //Start of developing the dictionary
         //Make the dictionary array with the right amount of empty space for the fragmentation.
-        dictionary2 = (Darray2*) malloc(sizeof(Darray2)*dictionary_size);
-        wordInsertionCase2(filename);
+        dictionary.dict2 = (Darray2*) calloc(sizeof(Darray2), dictionary_size);
+        wordInsertionCase2(words);
 
         //Interaction
         do
@@ -173,13 +158,13 @@ int main(int argc, char const *argv[])
 
         printf("Dictionary is closing...\n");
         freeMemoryCase2();
-
-        printf("Dictionary is closing...\n");
     break;
     }
     
     fclose(words); //Close file
+    free(filename);
 
+    printf("Dictionary closed\n");
     return 0;
 }
 
@@ -229,7 +214,7 @@ void wordInsertionCase1(FILE *fp)
 {
     int i, inserted;
     unsigned int hash, start_point;
-    char* word;
+    char word[WORD_SIZE];
 
     //Read and store every word
     while (!feof(fp)) //Traverse all the file
@@ -238,27 +223,27 @@ void wordInsertionCase1(FILE *fp)
         hash = strToHash(word); //Get hash
         inserted = 0;
         //Search if the word already exists
-        if (dictionary1[hash].word!=NULL && strcmp(dictionary1[hash].word, word) == 0)
+        if (dictionary.dict1[hash].word==NULL)
+        {
+            //Store the word if cell empty
+            dictionary.dict1[hash].word = strdup(word);
+            inserted = 1;
+        }
+        else if (dictionary.dict1[hash].word!=NULL && strcmp(dictionary.dict1[hash].word, word) != 0)
         {
             i = 1;
             start_point = hash;
             //Traverse the cells until found an empty one or come back to the same one
-            while ((hash = hash + i % dictionary_size) != start_point) //check like a circle array
+            while ((hash = (hash+i) % dictionary_size) != start_point) //check like a circle array
             {
-                if (dictionary1[hash].word == NULL)
+                if (dictionary.dict1[hash].word == NULL)
                 {
                     //Store the word if cell empty
-                    dictionary1[hash].word = strdup(word);
+                    dictionary.dict1[hash].word = strdup(word);
                     inserted = 1;
                 }
                 i++; //Next array cell
             }
-        }
-        else if (dictionary1[hash].word==NULL)
-        {
-            //Store the word if cell empty
-            dictionary1[hash].word = strdup(word);
-            inserted = 1;
         }
         //Status of word
         if (inserted)
@@ -276,7 +261,7 @@ void wordInsertionCase2(FILE *fp)
 {
     int i;
     unsigned int hash, start_point;
-    char *sorted_word=NULL, *word;
+    char *sorted_word=NULL, word[WORD_SIZE];
     Chain *temp_chain=NULL;
 
     //Read and store every word
@@ -290,28 +275,42 @@ void wordInsertionCase2(FILE *fp)
         hash = strToHash(sorted_word); //Produce hash from sorted word
 
         //Check if cell is empty
-        if (dictionary2[hash].sorted_word==NULL)
+        if (dictionary.dict2[hash].sorted_word==NULL)
         {
-            dictionary2[hash].sorted_word = strdup(sorted_word); //Store sorting word
+            dictionary.dict2[hash].sorted_word = strdup(sorted_word); //Store sorting word
+            //Initialise head
+            dictionary.dict2[hash].head = (Chain*) malloc(sizeof(Chain));
+            dictionary.dict2[hash].head->word = strdup(word);
+            dictionary.dict2[hash].head->next = NULL;
         }
-        else if (strcmp(dictionary2[hash].sorted_word, sorted_word) != 0)
+        else if (strcmp(dictionary.dict2[hash].sorted_word, sorted_word) != 0)
         {
             i = 1;
             start_point = hash;
-            while (hash = hash+i % dictionary_size != start_point)
+            while ((hash = (hash+i) % dictionary_size) != start_point)
             {
                 //Find an empty space
-                if (dictionary2[hash].sorted_word==NULL)
+                if (dictionary.dict2[hash].sorted_word==NULL)
                 {
-                    dictionary2[hash].sorted_word = strdup(sorted_word); //Store sorting word
+                    dictionary.dict2[hash].sorted_word = strdup(sorted_word); //Store sorting word
+                    //Initialise head
+                    dictionary.dict2[hash].head = (Chain*) malloc(sizeof(Chain));
+                    dictionary.dict2[hash].head->word = strdup(word);
+                    dictionary.dict2[hash].head->next = NULL;
                     break;
                 }
                 i++; //Next node
             }
+            if (hash==start_point)
+            {
+                printf("Array is full. End of insertion\n");
+                free(sorted_word); //Free allocation
+                return;
+            }
         }
         
         //Search the relative chain for the word or a place to store
-        temp_chain = dictionary2[hash].head;
+        temp_chain = dictionary.dict2[hash].head;
         while (temp_chain->word!=NULL)
         {
             //if word already exists, go next node
@@ -324,6 +323,7 @@ void wordInsertionCase2(FILE *fp)
         //Status of word
         printf("Word: %s is in\n", word);
     }
+    free(sorted_word); //Free allocation
 }
 
 void sortWord(char** word)
@@ -336,15 +336,15 @@ void sortWord(char** word)
         min = i;
         for (j = i+1; j < strlen(*word); j++)
         {
-            if (word[j]<word[i])
+            if ((*word)[j]<(*word)[min])
                 min = j;
 
         }
         
         //Change of characters
-        temp = word[i];
-        word[i] = word[j];
-        word[j] = temp;
+        temp = (*word)[i];
+        (*word)[i] = (*word)[min];
+        (*word)[min] = temp;
     }
 }
 
@@ -352,7 +352,7 @@ int searchDictionaryCase1(char *word, unsigned int *pHash, unsigned int *pIndex)
 {
     *pHash = strToHash(word);
     //Search dictionary
-    if (strcmp(dictionary1[*pHash].word, word) == 0)
+    if ((dictionary.dict1[*pHash].word!=NULL) && (strcmp(dictionary.dict1[*pHash].word, word) == 0))
     {
         *pIndex = *pHash;
         return 1; //Found the word
@@ -363,9 +363,9 @@ int searchDictionaryCase1(char *word, unsigned int *pHash, unsigned int *pIndex)
         unsigned int starting_hash = *pHash;
         *pIndex = starting_hash;
         //Traverse the cells until found an empty one or come back to the same one
-        while ((*pIndex = *pIndex + i % dictionary_size) != starting_hash) //check like a circle array
+        while ((*pIndex = (*pIndex + i) % dictionary_size) != starting_hash) //check like a circle array
         {
-            if (strcmp(dictionary1[*pHash].word, word) == 0)
+            if (strcmp(dictionary.dict1[*pIndex].word, word) == 0)
                 return 1; //Found the word
             i++; //Next array cell
         }
@@ -388,11 +388,12 @@ int searchDictionaryCase2(char *word, unsigned int *pHash, unsigned int *pIndex)
     *pHash = strToHash(word);
     //Ready the sorted word
     sorted_word = strdup(word);
-    sortWord(sorted_word);
+    sortWord(&sorted_word);
     //Search dictionary
-    if (strcmp(dictionary2[*pHash].sorted_word, sorted_word) == 0)
+    if (strcmp(dictionary.dict2[*pHash].sorted_word, sorted_word) == 0)
     {
         *pIndex = *pHash;
+        free(sorted_word); //Free the allocation
         return 1; //Found the word
     }
     else
@@ -401,14 +402,18 @@ int searchDictionaryCase2(char *word, unsigned int *pHash, unsigned int *pIndex)
         unsigned int starting_hash = *pHash;
         *pIndex = starting_hash;
         //Traverse the cells until found an empty one or come back to the same one
-        while ((*pIndex = *pIndex + i % dictionary_size) != starting_hash) //check like a circle array
+        while ((*pIndex = (*pIndex + i) % dictionary_size) != starting_hash) //check like a circle array
         {
-            if (strcmp(dictionary2[*pHash].sorted_word, sorted_word) == 0)
+            if (strcmp(dictionary.dict2[*pIndex].sorted_word, sorted_word) == 0)
+            {
+                free(sorted_word); //Free the allocation
                 return 1; //Found the word
+            }
             i++; //Next array cell
         }
     }
-
+    
+    free(sorted_word); //Free the allocation
     return 0; //Not found
 }
 
@@ -419,7 +424,7 @@ void printSearchedResultCase2(char *word, unsigned int *pHash, unsigned int *pIn
     printf("Hash Code: %u\n", *pHash);
     printf("Index: %u\n", *pIndex);
     printf("--Printing all the anagrams--\n");
-    Chain *temp=NULL;
+    Chain *temp = dictionary.dict2[*pIndex].head;
     while (temp!=NULL)
     {
         printf("%s\n", temp->word);
@@ -431,7 +436,10 @@ void printSearchedResultCase2(char *word, unsigned int *pHash, unsigned int *pIn
 void freeMemoryCase1(void)
 {
     //Free allocated memory
-    free(dictionary1); //Free the array
+    for (int i = 0; i < dictionary_size; i++)
+    if (dictionary.dict1[i].word != NULL)
+        free(dictionary.dict1[i].word);
+    free(dictionary.dict1);
 }
 
 void freeMemoryCase2(void)
@@ -441,7 +449,7 @@ void freeMemoryCase2(void)
     for (i = 0; i < dictionary_size; i++)
     {
         //Free each chain
-        temp1 = dictionary2[i].head;
+        temp1 = dictionary.dict2[i].head;
         while (temp1!=NULL)
         {
             temp2 = temp1->next;
@@ -449,7 +457,7 @@ void freeMemoryCase2(void)
             temp1 = temp2;
         }
     }
-    free(dictionary2); //Free leftover array
+    free(dictionary.dict2); //Free leftover array
 }
 
 void wrongStartInput(void)
