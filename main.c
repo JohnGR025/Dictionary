@@ -22,18 +22,18 @@ typedef union Union{
 } UnionD;
 
 //Function bodies:
-int countWords(char* fname);
-int searchDictionaryCase1(char *word, unsigned int *pHash, unsigned int *pIndex);
-int searchDictionaryCase2(char *word, unsigned int *pHash, unsigned int *pIndex);
+unsigned int strToHash(char *str); //Produce hash from str
+int countWords(char* fname); //Count the word in the file
+void sortWord(char** word); //Sort word using selection sort in ascending order
 void wordInsertionCase1(FILE *fp);
 void wordInsertionCase2(FILE *fp);
+int searchDictionaryCase1(char *word, unsigned int *pHash, unsigned int *pIndex);
+int searchDictionaryCase2(char *word, unsigned int *pHash, unsigned int *pIndex);
 void printSearchedResultCase1(char *word, unsigned int *pHash, unsigned int *pIndex);
 void printSearchedResultCase2(char *word, unsigned int *pHash, unsigned int *pIndex);
-unsigned int strToHash(char *str);
-void sortWord(char** word);
-void wrongStartInput(void);
 void freeMemoryCase1(void);
 void freeMemoryCase2(void);
+void wrongStartInput(void);
 void bufferCleaner(void);
 
 //Static variables for general use:
@@ -45,7 +45,6 @@ static UnionD dictionary; //The dictionary, where the words are stored
 
 int main(int argc, char const *argv[])
 {
-    argc = 2;
     //Checking starting input
     if (argc<=1 || argc>3) //Wrong start input, wrong num of inputs
         wrongStartInput();
@@ -118,7 +117,7 @@ int main(int argc, char const *argv[])
             found = searchDictionaryCase1(word_taker, pHash, pIndex);
             if (found == 1)
             {
-                printf("The word was found!");
+                printf("The word was found!\n");
                 printSearchedResultCase1(word_taker, pHash, pIndex);
             }
             else
@@ -194,7 +193,7 @@ int countWords(char* fname)
 
     printf("Loading...");
     int count = -1; //Because of an extra read that will happen
-    char dummy[50]; //Used just to count the total words.
+    char dummy[50]; //Used just to count the total words, storing each word
     
     //Through the file we go
     while (!feof(fp))
@@ -217,7 +216,7 @@ void wordInsertionCase1(FILE *fp)
     char word[WORD_SIZE];
 
     //Read and store every word
-    while (!feof(fp)) //Traverse all the file
+    while (!feof(fp)) //Traverse the file
     {
         fscanf(fp, "%s\n", word); //Read word into a var
         hash = strToHash(word); //Get hash
@@ -253,7 +252,6 @@ void wordInsertionCase1(FILE *fp)
             printf("Array is full. End of insertion\n");
             return;
         }
-
     }
 }
 
@@ -313,6 +311,12 @@ void wordInsertionCase2(FILE *fp)
         temp_chain = dictionary.dict2[hash].head;
         while (temp_chain->word!=NULL)
         {
+            //if word already in
+            if (strcmp(temp_chain->word, word) == 0)
+            {
+                free(sorted_word); //Free allocation
+                return;
+            }
             //if word already exists, go next node
             temp_chain = temp_chain->next; //Next node
         }
@@ -348,7 +352,7 @@ void sortWord(char** word)
     }
 }
 
-int searchDictionaryCase1(char *word, unsigned int *pHash, unsigned int *pIndex) //The word here is from the user's input.
+int  searchDictionaryCase1(char *word, unsigned int *pHash, unsigned int *pIndex) //The word here is from the user's input.
 {
     *pHash = strToHash(word);
     //Search dictionary
@@ -385,10 +389,10 @@ void printSearchedResultCase1(char *word, unsigned int *pHash, unsigned int *pIn
 int searchDictionaryCase2(char *word, unsigned int *pHash, unsigned int *pIndex) //The word here is from the user's input.
 {
     char* sorted_word=NULL;
-    *pHash = strToHash(word);
     //Ready the sorted word
     sorted_word = strdup(word);
     sortWord(&sorted_word);
+    *pHash = strToHash(sorted_word); //Get hash
     //Search dictionary
     if (strcmp(dictionary.dict2[*pHash].sorted_word, sorted_word) == 0)
     {
@@ -453,10 +457,12 @@ void freeMemoryCase2(void)
         while (temp1!=NULL)
         {
             temp2 = temp1->next;
-            free(temp1);
+            free(temp1->word); //Free word
+            free(temp1); //Free node
             temp1 = temp2;
         }
     }
+    free(dictionary.dict2->sorted_word); //Free word
     free(dictionary.dict2); //Free leftover array
 }
 
