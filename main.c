@@ -126,11 +126,11 @@ int main(int argc, char const *argv[])
             if (strcmp(word_taker, "-") == 0) //Input is empty
                 break; //End of interaction
             
-            found = searchDictionary(word_taker,pHash,pIndex);
-            if(found == 1)
+            found = searchDictionaryCase1(word_taker, pHash, pIndex);
+            if (found == 1)
             {
                 printf("The word was found!");
-                printSearchResult(word_taker, pHash, pIndex);
+                printSearchedResultCase1(word_taker, pHash, pIndex);
             }
             else
                 printf("This word was not found in the dictionary.\n");
@@ -317,45 +317,35 @@ void sortWord(char** word)
     }
 }
 
-int searchDictionary(char *word,unsigned int *pHash, unsigned int *pIndex) //The word here is from the user's input.
+int searchDictionaryCase1(char *word, unsigned int *pHash, char *pIndex) //The word here is from the user's input.
 {
     *pHash = strToHash(word);
     //Search dictionary
-    if(dictionary[*pHash].hash == *pHash){
+    if (strcmp(dictionary1[*pHash].word, word) == 0)
+    {
         *pIndex = *pHash;
-        return 1;
+        return 1; //Found the word
     }
-    else{
-        for(int i=*pHash+1;i<dictionary_size;i++){
-            if(i >= dictionary_size){
-                i = 0;
-            }
-
-            if(strcmp(dictionary[i]->word,word) == 0){
-                *pIndex = *pHash;
-                return 1;
-                break;
-            }
-            if(i == *pHash)
-                break;
+    else
+    {
+        int i = 1;
+        unsigned int starting_hash = *pHash;
+        *pIndex = starting_hash;
+        //Traverse the cells until found an empty one or come back to the same one
+        while ((*pIndex = *pIndex + i % dictionary_size) != starting_hash) //check like a circle array
+        {
+            if (strcmp(dictionary1[*pHash].word, word) == 0)
+                return 1; //Found the word
+            i++; //Next array cell
         }
     }
 
-    return 0;
-
-    
+    return 0; //Not found
 }
 
-void printSearchResult(char *word, unsigned int *pHash, unsigned int *pIndex)
+void printSearchedResultCase1(char *word, unsigned int *pHash, unsigned int *pIndex)
 {
-    //Word NOT found
-    if (*pIndex == -1)
-    {
-        printf("Your word: %s hasn't been found\n", word);
-        return;
-    }
-
-    //Word found
+    //Print info
     printf("Your word: %s found in\n", word);
     printf("Hash Code: %u\n", *pHash);
     printf("Index: %u\n", *pIndex);
