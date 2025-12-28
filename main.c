@@ -103,23 +103,25 @@ int main(int argc, char const *argv[])
         exit(0);
     }
 
-    //Main's variables
-    //Make the dictionary array with the right amount of empty space for the fragmentation.
-    dictionary = (Darray*) malloc(sizeof(Darray)*dictionary_size);
-    char* word_taker = malloc(WORD_SIZE);
+    //Variables
+    //For the Interaction
+    unsigned int hash_code = 0;
+    unsigned int *pHash = &hash_code;
+    unsigned int index = 0;
+    unsigned int *pIndex = &index;
+    int found = 0;
+    //For word input from user
+    char* word_taker = (char*) malloc(WORD_SIZE*sizeof(char));
 
     switch (storing_type) //Different interaction with dictionary based of storing_type
     {
-        case 1:
+    case 1:
         //Start of developing the dictionary
+        //Make the dictionary array with the right amount of empty space for the fragmentation.
+        dictionary1 = (Darray1*) malloc(sizeof(Darray1)*dictionary_size);
         wordInsertionCase1(filename);
 
         //Interaction
-        unsigned int hash_code = 0;
-        unsigned int *pHash = &hash_code;
-        unsigned int index = 0;
-        unsigned int *pIndex = &index;
-        int found = 0;
         do
         {
             printf("Give me a word to search in the dictionary (enter '-' for exit): ");
@@ -141,9 +143,36 @@ int main(int argc, char const *argv[])
 
         printf("Dictionary is closing...\n");
         freeMemoryCase1();
-        break;
+    break;
     
     case 2:
+        //Start of developing the dictionary
+        //Make the dictionary array with the right amount of empty space for the fragmentation.
+        dictionary2 = (Darray2*) malloc(sizeof(Darray2)*dictionary_size);
+        wordInsertionCase2(filename);
+
+        //Interaction
+        do
+        {
+            printf("Give me a word to search in the dictionary (enter '-' for exit): ");
+            scanf("%s", word_taker); //Read a word for search
+            bufferCleaner();
+            if (strcmp(word_taker, "-") == 0) //Input is empty
+                break; //End of interaction
+            
+            found = searchDictionaryCase2(word_taker, pHash, pIndex);
+            if (found == 1)
+            {
+                printf("The word was found!");
+                printSearchedResultCase2(word_taker, pHash, pIndex);
+            }
+            else
+                printf("This word was not found in the dictionary.\n");
+            
+        } while(strcmp(word_taker, "-") != 0);
+
+        printf("Dictionary is closing...\n");
+        freeMemoryCase2();
 
         printf("Dictionary is closing...\n");
     break;
@@ -407,7 +436,20 @@ void freeMemoryCase1(void)
 
 void freeMemoryCase2(void)
 {
-
+    int i;
+    Chain *temp1=NULL, *temp2=NULL;
+    for (i = 0; i < dictionary_size; i++)
+    {
+        //Free each chain
+        temp1 = dictionary2[i].head;
+        while (temp1!=NULL)
+        {
+            temp2 = temp1->next;
+            free(temp1);
+            temp1 = temp2;
+        }
+    }
+    free(dictionary2); //Free leftover array
 }
 
 void wrongStartInput(void)
