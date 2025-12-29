@@ -2,8 +2,11 @@
 ### University project about creating a dictionary to practise with the hashing methods.
 
 - Issues:
-Segs when i input a custom file. Specifically when i try to search for a word.
-Logic ones maybe?
+Look for any other issues if is there any.
+Try at Cygwin.
+
+Compile in Windows system:
+gcc -o main main.c FunctionFolder/case1.c FunctionFolder/case2.c FunctionFolder/generalf.c FunctionFolder/globalvariables.c  
 
 ### Structure/Execution of program:
 The user starts the program by inputing the dictionary file name
