@@ -1,7 +1,7 @@
-#define WORD_SIZE 50 //Size for each word
-
 #ifndef STRUCTS_H
 #define STRUCTS_H
+
+#define WORD_SIZE 50 //Size for each word
 
 typedef struct DictionaryArray1{
     char* word;

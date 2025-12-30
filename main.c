@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "FunctionFolder\case1.h"
-#include "FunctionFolder\case2.h"
-#include "FunctionFolder\generalf.h"
-#include "FunctionFolder\globalvariables.c"
-#include "FunctionFolder\structs.h"
+#include "FunctionFolder/case1.h"
+#include "FunctionFolder/case2.h"
+#include "FunctionFolder/generalf.h"
+#include "FunctionFolder/globalvariables.h"
+#include "FunctionFolder/structs.h"
 
 int main(int argc, char const *argv[])
 {
@@ -71,7 +71,7 @@ int main(int argc, char const *argv[])
         for(int i=0;i<dictionary_size;i++){
             dictionary.dict1[i].word = NULL;
         }
-        wordInsertionCase1(words);
+        wordInsertionDict1(words);
 
         //Interaction
         do
@@ -82,11 +82,11 @@ int main(int argc, char const *argv[])
             if (strcmp(word_taker, "-") == 0) //Input is empty
                 break; //End of interaction
             
-            found = searchDictionaryCase1(word_taker, pHash, pIndex);
+            found = searchDictionaryDict1(word_taker, pHash, pIndex);
             if (found == 1)
             {
                 printf("The word was found!\n");
-                printSearchedResultCase1(word_taker, pHash, pIndex);
+                printSearchedResultDict1(word_taker, pHash, pIndex);
             }
             else
                 printf("This word was not found in the dictionary.\n");
@@ -94,7 +94,7 @@ int main(int argc, char const *argv[])
         } while(strcmp(word_taker, "-") != 0);
 
         printf("Dictionary is closing...\n");
-        freeMemoryCase1();
+        freeMemoryDict1();
     break;
     
     case 2:
@@ -104,7 +104,7 @@ int main(int argc, char const *argv[])
         for(int i=0;i<dictionary_size;i++){
             dictionary.dict2[i].sorted_word = NULL;
         }
-        wordInsertionCase2(words);
+        wordInsertionDict2(words);
 
         //Interaction
         do
@@ -115,11 +115,11 @@ int main(int argc, char const *argv[])
             if (strcmp(word_taker, "-") == 0) //Input is empty
                 break; //End of interaction
             
-            found = searchDictionaryCase2(word_taker, pHash, pIndex);
+            found = searchDictionaryDict2(word_taker, pHash, pIndex);
             if (found == 1)
             {
                 printf("The word was found!");
-                printSearchedResultCase2(word_taker, pHash, pIndex);
+                printSearchedResultDict2(word_taker, pHash, pIndex);
             }
             else
                 printf("This word was not found in the dictionary.\n");
@@ -127,7 +127,7 @@ int main(int argc, char const *argv[])
         } while(strcmp(word_taker, "-") != 0);
 
         printf("Dictionary is closing...\n");
-        freeMemoryCase2();
+        freeMemoryDict2();
     break;
     }
     

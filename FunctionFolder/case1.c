@@ -1,12 +1,12 @@
+//Libraries:
 #include "case1.h"
 #include "generalf.h"
 #include "globalvariables.c"
-//Libraries:
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-void wordInsertionCase1(FILE *fp)
+void wordInsertionDict1(FILE *fp)
 {
     int inserted;
     unsigned int hash, start_point;
@@ -52,7 +52,7 @@ void wordInsertionCase1(FILE *fp)
     }
 }
 
-int  searchDictionaryCase1(char *word, unsigned int *pHash, unsigned int *pIndex) //The word here is from the user's input.
+int  searchDictionaryDict1(char *word, unsigned int *pHash, unsigned int *pIndex) //The word here is from the user's input.
 {
     *pHash = strToHash(word);
     //Search dictionary
@@ -76,7 +76,7 @@ int  searchDictionaryCase1(char *word, unsigned int *pHash, unsigned int *pIndex
     return 0; //Not found
 }
 
-void printSearchedResultCase1(char *word, unsigned int *pHash, unsigned int *pIndex)
+void printSearchedResultDict1(char *word, unsigned int *pHash, unsigned int *pIndex)
 {
     //Print info
     printf("Your word: %s found in\n", word);
@@ -84,7 +84,7 @@ void printSearchedResultCase1(char *word, unsigned int *pHash, unsigned int *pIn
     printf("Index: %u\n", *pIndex);
 }
 
-void freeMemoryCase1(void)
+void freeMemoryDict1(void)
 {
     //Free allocated memory
     for (int i = 0; i < dictionary_size; i++)

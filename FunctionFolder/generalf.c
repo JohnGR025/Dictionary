@@ -1,9 +1,11 @@
+//Libraries:
 #include "generalf.h"
 #include "structs.h"
 #include "globalvariables.c"
 #include <stdio.h> //Just to disappear the error message because of the FILE pointer.
-#include <stdlib.h> //for the "exit(0) in line 53"
+#include <stdlib.h> //for the exit() function
 #include <string.h>
+
 unsigned int strToHash(char *str)
 {
     unsigned int hash = 0;

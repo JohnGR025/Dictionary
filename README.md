@@ -3,10 +3,9 @@
 
 - Issues:
 Look for any other issues if is there any.
-Try at Cygwin.
 
-Compile in Windows system:
-gcc -o main main.c FunctionFolder/case1.c FunctionFolder/case2.c FunctionFolder/generalf.c FunctionFolder/globalvariables.c  
+- Compile command:
+gcc -o main main.c FunctionFolder/case1.c FunctionFolder/case2.c FunctionFolder/generalf.c FunctionFolder/globalvariables.c
 
 ### Structure/Execution of program:
 The user starts the program by inputing the dictionary file name
@@ -81,12 +80,14 @@ Using the hash we check the array's cells. In an empty one we store the sorted w
 If we find a full cell, we check serially for an empty one until we reach the starting point of the search. That signals the end of the insertion since the array is completely full.
 That's the half of the function. The other half stores the actual word into the chain list. 
 We the hash code ready we use it to lock on the list and traverce it to find if the word already exists. If not then we store it at the end of it.
+No duplicate words are being inserted of course.
 
 #### - int searchDict1(char *word, unsigned int *pHash, unsigned int *pIndex):
 First, we get the hash of the word.
 We search in dict1[hash] to see if the slot is full and containes the word.
 Update the pIndex and return true.
 Else we check serially to until we find the word or come back to where we start the search (that means we behave to the array as a circle one). Return relative value based on the result.
+No duplicate words are being inserted of course.
 
 #### - int searchDict2(char *word, unsigned int *pHash, unsigned int *pIndex):
 First, sort the word using selection sort and then we get the hash of that word.

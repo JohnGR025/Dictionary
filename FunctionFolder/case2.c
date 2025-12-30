@@ -1,14 +1,15 @@
+//Libraries:
 #include "case2.h"
 #include "generalf.h"
 #include "structs.h"
 #include "globalvariables.c"
-//Libraries:
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-void wordInsertionCase2(FILE *fp)
+void wordInsertionDict2(FILE *fp)
 {
+    char is_same; //If found similar word
     unsigned int hash, start_point;
     char *sorted_word=NULL, word[WORD_SIZE];
     Chain *temp_chain=NULL;
@@ -29,8 +30,14 @@ void wordInsertionCase2(FILE *fp)
         while (dictionary.dict2[hash].sorted_word != NULL && strcmp(dictionary.dict2[hash].sorted_word, sorted_word) != 0)
         {
             hash = (hash + 1) % dictionary_size;
+            if (hash == start_point)  // Dictionary is full
+            {
+                printf("Error: Dictionary is full! Cannot insert '%s' or any other word left.\n", word);
+                free(sorted_word);
+                return; //Stop insertion, array
+            }
         }
-
+        
         if (dictionary.dict2[hash].sorted_word == NULL) //If the slot is empty
         {
             dictionary.dict2[hash].sorted_word = strdup(sorted_word); //Place the sorted word there (fill the field sorted_word)
@@ -41,14 +48,23 @@ void wordInsertionCase2(FILE *fp)
         else //If the slot is not empty, then the word is an anagram and we place it in the chain of words.
         {
             Chain *curr = dictionary.dict2[hash].head;
-            while (curr->next != NULL)
+            is_same = 0; //Assume no similar word
+            while (curr != NULL)  // Check all nodes including the last
             {
-                if (strcmp(curr->word, word) == 0) //If we find the exact same word in the anagram then we skip it.
-                    return;
-                curr = curr->next;
+                if (strcmp(curr->word, word) == 0)
+                {
+                    is_same = 1; //Found same word
+                    break;
+                }
+                if (curr->next == NULL)
+                    break;  //Stop at last node for insertion
+                curr = curr->next; //next chain node
             }
+            if (is_same)
+                continue; //Next word
+            
             //else, we place it in the chain of words.
-            curr->next = malloc(sizeof(Chain));
+            curr->next = malloc(sizeof(Chain)); //New node
             curr->next->word = strdup(word);
             curr->next->next = NULL;
         }
@@ -56,10 +72,11 @@ void wordInsertionCase2(FILE *fp)
         //Status of word
         printf("Word: %s is in\n", word);
     }
+
     free(sorted_word); //Free allocation
 }
 
-void printSearchedResultCase2(char *word, unsigned int *pHash, unsigned int *pIndex)
+void printSearchedResultDict2(char *word, unsigned int *pHash, unsigned int *pIndex)
 {
     //Print info
     printf("Your word: %s found in\n", word);
@@ -75,7 +92,7 @@ void printSearchedResultCase2(char *word, unsigned int *pHash, unsigned int *pIn
     printf("--End of printing--\n");
 }
 
-int searchDictionaryCase2(char *word, unsigned int *pHash, unsigned int *pIndex) //The word here is from the user's input.
+int searchDictionaryDict2(char *word, unsigned int *pHash, unsigned int *pIndex) //The word here is from the user's input.
 {
     char* sorted_word=NULL;
     //Ready the sorted word
@@ -108,7 +125,7 @@ int searchDictionaryCase2(char *word, unsigned int *pHash, unsigned int *pIndex)
     return 0; //Not found
 }
 
-void freeMemoryCase2(void)
+void freeMemoryDict2(void)
 {
     int i;
     Chain *temp1=NULL, *temp2=NULL;
