@@ -1,10 +1,7 @@
 # Two-formed Dictionary
 ### University project about creating a dictionary to practise with the hashing methods.
 
-- Issues:
-Look for any other issues if is there any.
-
-- Compile command:
+- Compile command (if makefile is not used):
 gcc -o main main.c FunctionFolder/case1.c FunctionFolder/case2.c FunctionFolder/generalf.c FunctionFolder/globalvariables.c
 
 ### Structure/Execution of program:

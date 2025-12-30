@@ -1,14 +1,14 @@
 //Libraries:
 #include "case1.h"
 #include "generalf.h"
-#include "globalvariables.c"
+#include "globalvariables.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
 void wordInsertionDict1(FILE *fp)
 {
-    int inserted;
+    int inserted, count = 0;
     unsigned int hash, start_point;
     char word[WORD_SIZE];
 
@@ -42,7 +42,11 @@ void wordInsertionDict1(FILE *fp)
         }
         //Status of word
         if (inserted)
+        {
+            count++; //1+word is in
             printf("Word: %s is in\n", word);
+            printf("%d\n", count); //Total words currently in
+        }
         else
         {
             if(feof(fp))

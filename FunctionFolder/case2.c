@@ -2,7 +2,7 @@
 #include "case2.h"
 #include "generalf.h"
 #include "structs.h"
-#include "globalvariables.c"
+#include "globalvariables.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
