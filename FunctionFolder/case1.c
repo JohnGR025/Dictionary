@@ -8,7 +8,8 @@
 
 void wordInsertionDict1(FILE *fp)
 {
-    int inserted, count = 0;
+    int inserted; //If word has been inserted or not
+    int count = 0; //Count of total words in
     unsigned int hash, start_point;
     char word[WORD_SIZE];
 
@@ -44,8 +45,8 @@ void wordInsertionDict1(FILE *fp)
         if (inserted)
         {
             count++; //1+word is in
-            printf("Word: %s is in\n", word);
-            printf("%d\n", count); //Total words currently in
+            printf("Word: %s is in", word);
+            printf("%*d\n", 30-strlen(word), count);
         }
         else
         {

@@ -68,9 +68,8 @@ int main(int argc, char const *argv[])
         //Start of developing the dictionary
         //Make the dictionary array with the right amount of empty space for the fragmentation.
         dictionary.dict1 = (Darray1*) calloc(sizeof(Darray1), dictionary_size);
-        for(int i=0;i<dictionary_size;i++){
+        for (int i=0;i<dictionary_size;i++)
             dictionary.dict1[i].word = NULL;
-        }
         wordInsertionDict1(words);
 
         //Interaction
@@ -91,7 +90,7 @@ int main(int argc, char const *argv[])
             else
                 printf("This word was not found in the dictionary.\n");
             
-        } while(strcmp(word_taker, "-") != 0);
+        } while (strcmp(word_taker, "-") != 0);
 
         printf("Dictionary is closing...\n");
         freeMemoryDict1();
@@ -101,9 +100,8 @@ int main(int argc, char const *argv[])
         //Start of developing the dictionary
         //Make the dictionary array with the right amount of empty space for the fragmentation.
         dictionary.dict2 = (Darray2*) calloc(sizeof(Darray2), dictionary_size);
-        for(int i=0;i<dictionary_size;i++){
+        for (int i=0;i<dictionary_size;i++)
             dictionary.dict2[i].sorted_word = NULL;
-        }
         wordInsertionDict2(words);
 
         //Interaction
@@ -124,7 +122,7 @@ int main(int argc, char const *argv[])
             else
                 printf("This word was not found in the dictionary.\n");
             
-        } while(strcmp(word_taker, "-") != 0);
+        } while (strcmp(word_taker, "-") != 0);
 
         printf("Dictionary is closing...\n");
         freeMemoryDict2();

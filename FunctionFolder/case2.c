@@ -10,6 +10,7 @@
 void wordInsertionDict2(FILE *fp)
 {
     char is_same; //If found similar word
+    int count = 0; //Count of total words in
     unsigned int hash, start_point;
     char *sorted_word=NULL, word[WORD_SIZE];
     Chain *temp_chain=NULL;
@@ -70,7 +71,9 @@ void wordInsertionDict2(FILE *fp)
         }
 
         //Status of word
-        printf("Word: %s is in\n", word);
+        count++; //1+word is in
+        printf("Word: %s is in", word);
+        printf("%*d\n", 30-strlen(word), count);
     }
 
     free(sorted_word); //Free allocation
