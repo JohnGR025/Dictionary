@@ -13,9 +13,9 @@ In this project we have two tasks to accomplice that are related with the storin
 1) The array will be static size since we can know the users input file and each cell will point to a char* variable (each word).
 The word will be stored using calloc and then the array cell will point there.
 
-2) The array remains static since we input a file name but the storing differs. we use the hashing function on the sorting of the word (in ascending order) and store that word on the corresponding field. Then another field points to every word matching the sorting word (to a chain of words, a list).
+2) The array remains static since we input a file name but the storing differs. we use the hashing function on the sorting of the word (in ascending order) and store that word on the corresponding field. Then another field points to every word matching the sorting word (to a chain of words, a list) that stays alphabetically sorted.
 
-The array size will dependent from the amount of words from the dictionary, since, for the sake of the fregmantation, we need to leave
+The array size will depend from the amount of words from the dictionary, since, for the sake of the fregmantation, we need to leave
 some spaces so the insertion to be much faster.
 The action that the user can control is searching by inputing a word.
 Then the search happens with hashing function and serial search if needed.
@@ -51,7 +51,7 @@ User can search for a word. The calling of searchDictionaryCase1() and printSear
 #### Case 2:
 This case works similarily. The dictionary gets created using the dict2 struct type. We allocate memory, inserting the word using the hashing method and the chain struct in order to input words with the same hash in the same chain list.
 Then comes the input option that the user can use to search words.
-Each succesfull search prints the word, the hash, the index it is located and every anagram there is in the relative list.
+Each successfull search prints the word, the hash, the index it is located and every anagram there is in the relative list.
 When this inputing will end with "-", then the array gets deleted and you know.
 
 ### Functions:
@@ -78,6 +78,19 @@ If we find a full cell, we check serially for an empty one until we reach the st
 That's the half of the function. The other half stores the actual word into the chain list. 
 We the hash code ready we use it to lock on the list and traverce it to find if the word already exists. If not then we store it at the end of it.
 No duplicate words are being inserted of course.
+
+#### - Chain* mergeSort(Chain* head):
+Sorts the head alphabetically. Checks for a null head or a single node and returns the same parameter back.
+Else, we get to work. We pass two parameters into split() that returns them full, the head has been splitted into two halfs. Then each half head gets split again by calling mergeSort() recursively. Return the result of merge() that combines the chain together.
+
+#### - void split(Chain *head, Chain **left, Chain **right):
+Uses the Slow/Fast-Pointer technique (also called the "tortoise and hare" approach) that traverses the head with a move-by-1 pointer and a move-by-2 pointer. If the fast pointer reaches the end, the slow one is already at the middle of the chain. 
+The prev pointer the list's next pointers so it can cut off the list into two properly.
+Changing the pointers (left, right) to point into the splitted chains.
+
+#### - Chain* merge(Chain *left, Chain *right):
+Checks to make sure we have two chains to merge othrewise it returns the chain that we have. Then, recursively assembles the chain by checking the words in each splitted chain one by one alphabetically.
+Makes a list and returns it.
 
 #### - int searchDict1(char *word, unsigned int *pHash, unsigned int *pIndex):
 First, we get the hash of the word.

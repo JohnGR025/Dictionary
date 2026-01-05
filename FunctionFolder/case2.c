@@ -76,6 +76,11 @@ void wordInsertionDict2(FILE *fp)
         printf("%*d\n", 30-strlen(word), count);
     }
 
+    //Now that insertion finished, we sorting the chains
+    int i;
+    for (i = 0; i < dictionary_size; i++)
+        dictionary.dict2[i].head = mergeSort(dictionary.dict2[i].head);
+
     free(sorted_word); //Free allocation
 }
 

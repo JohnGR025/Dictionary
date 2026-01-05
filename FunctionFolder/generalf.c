@@ -1,10 +1,77 @@
-//Libraries:
 #include "generalf.h"
 #include "structs.h"
 #include "globalvariables.h"
 #include <stdio.h> //Just to disappear the error message because of the FILE pointer.
 #include <stdlib.h> //for the exit() function
 #include <string.h>
+
+Chain* merge(Chain *left, Chain *right)
+{
+    Chain *result = NULL;
+    
+    //Check cases
+    if (left == NULL)
+        return right;
+    if (right == NULL)
+        return left;
+    
+    //Recursively merge the lists
+    if (strcmp(left->word, right->word) <= 0)
+    {
+        result = left;
+        result->next = merge(left->next, right);
+    }
+    else
+    {
+        result = right;
+        result->next = merge(left, right->next);
+    }
+    
+    return result;
+}
+
+void split(Chain *head, Chain **left, Chain **right)
+{
+    Chain *slow = head; //Moves by 1 node
+    Chain *fast = head; //Moves by 2 node
+    Chain *prev = NULL;
+    
+    //Find middle of the list
+    while (fast != NULL && fast->next != NULL)
+    {
+        prev = slow;
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    
+    //Split the list
+    if (prev != NULL)
+        prev->next = NULL;
+    
+    //Set pointers
+    *left = head;
+    *right = slow;
+}
+
+Chain* mergeSort(Chain *head)
+{
+    //Check case: empty list or single node
+    if (head == NULL || head->next == NULL)
+        return head;
+    
+    Chain *left = NULL;
+    Chain *right = NULL;
+    
+    //Split the list into two halves
+    split(head, &left, &right);
+    
+    //Recursively sort both halves
+    left = mergeSort(left);
+    right = mergeSort(right);
+    
+    //Merge the sorted halves
+    return merge(left, right);
+}
 
 unsigned int strToHash(char *str)
 {
