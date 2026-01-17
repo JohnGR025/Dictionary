@@ -4,7 +4,3 @@ void wordInsertionDict1(FILE *fp);
 int searchDictionaryDict1(char *word, unsigned int *pHash, unsigned int *pIndex);
 void printSearchedResultDict1(char *word, unsigned int *pHash, unsigned int *pIndex);
 void freeMemoryDict1(void);
-
-
-
-

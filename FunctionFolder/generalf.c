@@ -79,7 +79,7 @@ unsigned int strToHash(char *str)
     
     while (*str) //While not '\0'
     {
-        hash = *str + 31*hash;
+        hash = *str + dictionary_size*hash;
         str++; //Next character
     }
 
