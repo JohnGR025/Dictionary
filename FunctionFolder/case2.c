@@ -17,7 +17,8 @@ void wordInsertionDict2(FILE *fp,int numOfWords)
     int temp = numOfWords;
 
     //Read and store every word
-    if(numOfWords == -1){
+    if (numOfWords == -1)
+    {
         while (fscanf(fp, "%s", word) == 1) //Traverse all the file
         {
             if (sorted_word!=NULL)
@@ -77,7 +78,9 @@ void wordInsertionDict2(FILE *fp,int numOfWords)
             printf("Word: %s is in", word);
             printf("%*d\n", 30-strlen(word), count);
         }
-    }else{
+    }
+    else
+    {
         while ((fscanf(fp, "%s", word) == 1) && temp>0) //Traverse all the file
         {
             if (sorted_word!=NULL)

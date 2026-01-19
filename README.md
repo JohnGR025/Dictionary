@@ -34,6 +34,7 @@ If the number of parameters are too small or too high, then the program won't st
 Else there are two case.
 1) We input a filename and a storing option (1 or 2) and those determine from what file we input words and how we store them into the array.
 2) We input a storing option (1 or 2) and that means that the filename is "dictionary" (a txt file of course, and for speedy execution of the program).
+Also the user gets asked for how many words of the file wants to insert.
 
 Based on that info, we have the storing type and the file we want to extract words from. Then we calculate the array's size based on the num of words and add some extra cells for faster insertion.
 Next, we enter a switch syntax and behave based on the type of the dictionary.

@@ -29,7 +29,6 @@ int main(int argc, char const *argv[])
                 else
                     dictionary_size = numOfWords + (int)(dictionary_size*0.5);
             }
-
             else
                 wrongStartInput();
             storing_type = atoi(argv[1]); //Set the way of dictionary's storing type
