@@ -7,73 +7,136 @@
 #include <string.h>
 #include <stdlib.h>
 
-void wordInsertionDict2(FILE *fp)
+void wordInsertionDict2(FILE *fp,int numOfWords)
 {
     char is_same; //If found similar word
     int count = 0; //Count of total words in
     unsigned int hash, start_point;
     char *sorted_word=NULL, word[WORD_SIZE];
     Chain *temp_chain=NULL;
+    int temp = numOfWords;
 
     //Read and store every word
-    while (!feof(fp)) //Traverse all the file
-    {
-        fscanf(fp, "%s\n", word); //Read word into a var
-        if (sorted_word!=NULL)
-            free(sorted_word);
-        sorted_word = strdup(word);
-        sortWord(&sorted_word); //Sort the word
-        hash = strToHash(sorted_word); //Produce hash from sorted word
-
-        //Check if cell is empty
-        //If the slot at the generated hash of the sorted word is full and it is not the exact same word (we check that
-        //because if it is not the same word then we need to see if it is an anagram).
-        while (dictionary.dict2[hash].sorted_word != NULL && strcmp(dictionary.dict2[hash].sorted_word, sorted_word) != 0)
+    if(numOfWords == -1){
+        while (fscanf(fp, "%s", word) == 1) //Traverse all the file
         {
-            hash = (hash + 1) % dictionary_size;
-            if (hash == start_point)  // Dictionary is full
-            {
-                printf("Error: Dictionary is full! Cannot insert '%s' or any other word left.\n", word);
+            if (sorted_word!=NULL)
                 free(sorted_word);
-                return; //Stop insertion, array
-            }
-        }
-        
-        if (dictionary.dict2[hash].sorted_word == NULL) //If the slot is empty
-        {
-            dictionary.dict2[hash].sorted_word = strdup(sorted_word); //Place the sorted word there (fill the field sorted_word)
-            dictionary.dict2[hash].head = malloc(sizeof(Chain)); //Create memory for the head since it's the first word.
-            dictionary.dict2[hash].head->word = strdup(word); //Place the not-sorted word in the head->word field.
-            dictionary.dict2[hash].head->next = NULL; //Set the next equal to null.
-        }
-        else //If the slot is not empty, then the word is an anagram and we place it in the chain of words.
-        {
-            Chain *curr = dictionary.dict2[hash].head;
-            is_same = 0; //Assume no similar word
-            while (curr != NULL)  // Check all nodes including the last
-            {
-                if (strcmp(curr->word, word) == 0)
-                {
-                    is_same = 1; //Found same word
-                    break;
-                }
-                if (curr->next == NULL)
-                    break;  //Stop at last node for insertion
-                curr = curr->next; //next chain node
-            }
-            if (is_same)
-                continue; //Next word
-            
-            //else, we place it in the chain of words.
-            curr->next = malloc(sizeof(Chain)); //New node
-            curr->next->word = strdup(word);
-            curr->next->next = NULL;
-        }
+            sorted_word = strdup(word);
+            sortWord(&sorted_word); //Sort the word
+            hash = strToHash(sorted_word); //Produce hash from sorted word
+            start_point = hash;
 
-        //Status of word
-        count++; //1+word is in
-        printf("Word: %s is in", word);
-        printf("%*d\n", 30-strlen(word), count);
+            //Check if cell is empty
+            //If the slot at the generated hash of the sorted word is full and it is not the exact same word (we check that
+            //because if it is not the same word then we need to see if it is an anagram).
+            while (dictionary.dict2[hash].sorted_word != NULL && strcmp(dictionary.dict2[hash].sorted_word, sorted_word) != 0)
+            {
+                hash = (hash + 1) % dictionary_size;
+                if (hash == start_point)  // Dictionary is full
+                {
+                    printf("Error: Dictionary is full! Cannot insert '%s' or any other word left.\n", word);
+                    free(sorted_word);
+                    return; //Stop insertion, array
+                }
+            }
+            
+            if (dictionary.dict2[hash].sorted_word == NULL) //If the slot is empty
+            {
+                dictionary.dict2[hash].sorted_word = strdup(sorted_word); //Place the sorted word there (fill the field sorted_word)
+                dictionary.dict2[hash].head = malloc(sizeof(Chain)); //Create memory for the head since it's the first word.
+                dictionary.dict2[hash].head->word = strdup(word); //Place the not-sorted word in the head->word field.
+                dictionary.dict2[hash].head->next = NULL; //Set the next equal to null.
+            }
+            else //If the slot is not empty, then the word is an anagram and we place it in the chain of words.
+            {
+                Chain *curr = dictionary.dict2[hash].head;
+                is_same = 0; //Assume no similar word
+                while (curr != NULL)  // Check all nodes including the last
+                {
+                    if (strcmp(curr->word, word) == 0)
+                    {
+                        is_same = 1; //Found same word
+                        break;
+                    }
+                    if (curr->next == NULL)
+                        break;  //Stop at last node for insertion
+                    curr = curr->next; //next chain node
+                }
+                if (is_same)
+                    continue; //Next word
+                
+                //else, we place it in the chain of words.
+                curr->next = malloc(sizeof(Chain)); //New node
+                curr->next->word = strdup(word);
+                curr->next->next = NULL;
+            }
+
+            //Status of word
+            count++; //1+word is in
+            printf("Word: %s is in", word);
+            printf("%*d\n", 30-strlen(word), count);
+        }
+    }else{
+        while ((fscanf(fp, "%s", word) == 1) && temp>0) //Traverse all the file
+        {
+            if (sorted_word!=NULL)
+                free(sorted_word);
+            sorted_word = strdup(word);
+            sortWord(&sorted_word); //Sort the word
+            hash = strToHash(sorted_word); //Produce hash from sorted word
+
+            //Check if cell is empty
+            //If the slot at the generated hash of the sorted word is full and it is not the exact same word (we check that
+            //because if it is not the same word then we need to see if it is an anagram).
+            while (dictionary.dict2[hash].sorted_word != NULL && strcmp(dictionary.dict2[hash].sorted_word, sorted_word) != 0)
+            {
+                hash = (hash + 1) % dictionary_size;
+                if (hash == start_point)  // Dictionary is full
+                {
+                    printf("Error: Dictionary is full! Cannot insert '%s' or any other word left.\n", word);
+                    free(sorted_word);
+                    return; //Stop insertion, array
+                }
+            }
+            
+            if (dictionary.dict2[hash].sorted_word == NULL) //If the slot is empty
+            {
+                dictionary.dict2[hash].sorted_word = strdup(sorted_word); //Place the sorted word there (fill the field sorted_word)
+                dictionary.dict2[hash].head = malloc(sizeof(Chain)); //Create memory for the head since it's the first word.
+                dictionary.dict2[hash].head->word = strdup(word); //Place the not-sorted word in the head->word field.
+                dictionary.dict2[hash].head->next = NULL; //Set the next equal to null.
+            }
+            else //If the slot is not empty, then the word is an anagram and we place it in the chain of words.
+            {
+                Chain *curr = dictionary.dict2[hash].head;
+                is_same = 0; //Assume no similar word
+                while (curr != NULL)  // Check all nodes including the last
+                {
+                    if (strcmp(curr->word, word) == 0)
+                    {
+                        is_same = 1; //Found same word
+                        break;
+                    }
+                    if (curr->next == NULL)
+                        break;  //Stop at last node for insertion
+                    curr = curr->next; //next chain node
+                }
+                if (is_same)
+                    continue; //Next word
+                
+                //else, we place it in the chain of words.
+                curr->next = malloc(sizeof(Chain)); //New node
+                curr->next->word = strdup(word);
+                curr->next->next = NULL;
+            }
+
+            //Status of word
+            count++; //1+word is in
+            temp--;
+            printf("Word: %s is in", word);
+            printf("%*d\n", 30-strlen(word), count);
+        }
     }
 
     //Now that insertion finished, we sorting the chains

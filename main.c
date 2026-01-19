@@ -10,6 +10,7 @@
 
 int main(int argc, char const *argv[])
 {
+    int numOfWords; //User's input for num of words inserted
     //Checking starting input
     if (argc<=1 || argc>3) //Wrong start input, wrong num of inputs
         wrongStartInput();
@@ -17,11 +18,18 @@ int main(int argc, char const *argv[])
     {
         //In this case the user didn't give a specific name for the txt file 
         //so it automatically converts the file name to dictionary.txt.
+        printf("How many words do you want to insert (-1 to place all the words):");
+        scanf("%d", &numOfWords);
         if (argc==2)
         {
             //Determine counting mode.
-            if (strlen(argv[1])==1 && (strcmp(argv[1],"1")==0 || strcmp(argv[1],"2")==0))
-                dictionary_size = countWords("dictionary.txt") + (int)(dictionary_size*0.5);
+            if (strlen(argv[1])==1 && (strcmp(argv[1],"1")==0 || strcmp(argv[1],"2")==0)){
+                if(numOfWords == -1)
+                    dictionary_size = countWords("dictionary.txt") + (int)(dictionary_size*0.5);
+                else
+                    dictionary_size = numOfWords + (int)(dictionary_size*0.5);
+            }
+
             else
                 wrongStartInput();
             storing_type = atoi(argv[1]); //Set the way of dictionary's storing type
@@ -36,8 +44,12 @@ int main(int argc, char const *argv[])
             strcat(filename, ".txt");
             
             //Determine counting mode
-            if (strlen(argv[2])==1 && (strcmp(argv[2], "1")==0 || strcmp(argv[2], "2")==0))
-                dictionary_size = countWords(filename) + (int)(dictionary_size*0.5);
+            if (strlen(argv[2])==1 && (strcmp(argv[2], "1")==0 || strcmp(argv[2], "2")==0)){
+                if(numOfWords == -1)
+                    dictionary_size = countWords(filename) + (int)(dictionary_size*0.5);
+                else
+                    dictionary_size = numOfWords + (int)(dictionary_size*0.5);
+            }
             else
                 wrongStartInput();
             storing_type = atoi(argv[2]); //Set the way of dictionary's storing type
@@ -70,7 +82,7 @@ int main(int argc, char const *argv[])
         dictionary.dict1 = (Darray1*) calloc(sizeof(Darray1), dictionary_size);
         for (int i=0;i<dictionary_size;i++)
             dictionary.dict1[i].word = NULL;
-        wordInsertionDict1(words);
+        wordInsertionDict1(words,numOfWords);
 
         //Interaction
         do
@@ -102,7 +114,7 @@ int main(int argc, char const *argv[])
         dictionary.dict2 = (Darray2*) calloc(sizeof(Darray2), dictionary_size);
         for (int i=0;i<dictionary_size;i++)
             dictionary.dict2[i].sorted_word = NULL;
-        wordInsertionDict2(words);
+        wordInsertionDict2(words,numOfWords);
 
         //Interaction
         do
