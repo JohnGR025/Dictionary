@@ -48,6 +48,7 @@ void wordInsertionDict1(FILE *fp, int numOfWords)
             {
                 count++; //1+word is in
                 printf("Word: %s is in\n", word);
+                printf("%*d\n", 30-strlen(word), count);
             }
             else
             {
@@ -90,6 +91,7 @@ void wordInsertionDict1(FILE *fp, int numOfWords)
                 count++; //1+word is in
                 temp--; //Decrease count of words
                 printf("Word: %s is in\n", word);
+                printf("%*d\n", 30-strlen(word), count);
             }
             else
             {
