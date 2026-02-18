@@ -10,7 +10,7 @@ and the way of storing the words (either with hashing table or Anagrams table).
 The file NEEDS to be txt and each word to be the one under the other. You can input the file name without the extension.
 In this project we have two tasks to accomplice that are related with the storing type of the word in the array:
 
-1) The array will be static size since we can know the users input file and each cell will point to a char* variable (each word).
+1) The array will be static size since we can know the users input file and each cell will point to a char* variable (representing a word).
 The word will be stored using calloc and then the array cell will point there.
 
 2) The array remains static since we input a file name but the storing differs. we use the hashing function on the sorting of the word (in ascending order) and store that word on the corresponding field. Then another field points to every word matching the sorting word (to a chain of words, a list) that stays alphabetically sorted.
@@ -31,7 +31,7 @@ Also the array is of a union struct type since we can only use one form of dicti
 ### Main program:
 Starting by checking the input of user, the one he entered when started the program.
 If the number of parameters are too small or too high, then the program won't start.
-Else there are two case.
+Else, there are two cases.
 1) We input a filename and a storing option (1 or 2) and those determine from what file we input words and how we store them into the array.
 2) We input a storing option (1 or 2) and that means that the filename is "dictionary" (a txt file of course, and for speedy execution of the program).
 Also the user gets asked for how many words of the file wants to insert.
