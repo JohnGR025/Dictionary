@@ -57,8 +57,8 @@ When this inputing will end with "-", then the array gets deleted and you know.
 
 ### Functions:
 #### - unsigned int strToHash(char* str): 
-Cycle through the str and calculate the hash code from (*str + dictionary_size*hash).
-We also use the previous hash generated as seen.
+Cycle through the str and calculate the hash code from (*str + dictionary_size * hash).
+We also use the previous hash generated as seen in code.
 Return the remainder of the division of hash and dictionary's size.
 
 #### - int countWords(char* fname):
