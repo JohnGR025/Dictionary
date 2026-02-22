@@ -173,8 +173,9 @@ int searchDictionaryDict2(char *word, unsigned int *pHash, unsigned int *pIndex)
     sorted_word = strdup(word);
     sortWord(&sorted_word);
     *pHash = strToHash(sorted_word); //Get hash
+    
     //Search dictionary
-    if (strcmp(dictionary.dict2[*pHash].sorted_word, sorted_word) == 0)
+    if (dictionary.dict2[*pHash].sorted_word!=NULL && strcmp(dictionary.dict2[*pHash].sorted_word, sorted_word) == 0)
     {
         *pIndex = *pHash;
         free(sorted_word); //Free the allocation
@@ -187,7 +188,7 @@ int searchDictionaryDict2(char *word, unsigned int *pHash, unsigned int *pIndex)
         //Traverse the cells until found an empty one or come back to the same one
         while ((*pIndex = (*pIndex + 1) % dictionary_size) != starting_hash) //check like a circle array
         {
-            if (strcmp(dictionary.dict2[*pIndex].sorted_word, sorted_word) == 0)
+            if (dictionary.dict2[*pIndex].sorted_word != NULL && strcmp(dictionary.dict2[*pIndex].sorted_word, sorted_word) == 0)
             {
                 free(sorted_word); //Free the allocation
                 return 1; //Found the word

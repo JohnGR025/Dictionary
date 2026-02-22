@@ -11,6 +11,7 @@
 int main(int argc, char const *argv[])
 {
     int numOfWords; //User's input for num of words inserted
+    char ch; //For buffer cleaning
     //Checking starting input
     if (argc<=1 || argc>3) //Wrong start input, wrong num of inputs
         wrongStartInput();
@@ -20,14 +21,18 @@ int main(int argc, char const *argv[])
         //so it automatically converts the file name to dictionary.txt.
         printf("How many words do you want to insert (-1 to place all the words):");
         scanf("%d", &numOfWords);
+        bufferCleaner();
+        
+        int countW; //Count of words in file
         if (argc==2)
         {
             //Determine counting mode.
+            countW = countWords("dictionary.txt");
             if (strlen(argv[1])==1 && (strcmp(argv[1],"1")==0 || strcmp(argv[1],"2")==0)){
                 if(numOfWords == -1)
-                    dictionary_size = countWords("dictionary.txt") + (int)(dictionary_size*0.5);
+                    dictionary_size = countW + countW*0.5;
                 else
-                    dictionary_size = numOfWords + (int)(dictionary_size*0.5);
+                    dictionary_size = numOfWords + numOfWords*0.5;
             }
             else
                 wrongStartInput();
@@ -43,11 +48,12 @@ int main(int argc, char const *argv[])
             strcat(filename, ".txt");
             
             //Determine counting mode
+            countW = countWords(filename);
             if (strlen(argv[2])==1 && (strcmp(argv[2], "1")==0 || strcmp(argv[2], "2")==0)){
                 if(numOfWords == -1)
-                    dictionary_size = countWords(filename) + (int)(dictionary_size*0.5);
+                    dictionary_size = countW + countW*0.5;
                 else
-                    dictionary_size = numOfWords + (int)(dictionary_size*0.5);
+                    dictionary_size = numOfWords + numOfWords*0.5;
             }
             else
                 wrongStartInput();
@@ -127,7 +133,7 @@ int main(int argc, char const *argv[])
             found = searchDictionaryDict2(word_taker, pHash, pIndex);
             if (found == 1)
             {
-                printf("The word was found!");
+                printf("The word was found!\n");
                 printSearchedResultDict2(word_taker, pHash, pIndex);
             }
             else
